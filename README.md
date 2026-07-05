@@ -48,36 +48,95 @@ pip install opengita
 
 ---
 
-## Quick Start
+## Quick Start (Functional API)
+
+OpenGita features a simple, beginner-friendly functional API at the top-level package. Functions return human-readable, pre-formatted strings directly.
 
 ```python
-from opengita import Gita
+import opengita
 
-# Initialize client (loads and validates dataset in memory once)
-gita = Gita()
+# 1. Fetch a random canonical verse
+print(opengita.get_random_verse())
 
-# 1. Fetch random canonical verse
-r = gita.random()
-print(f"Random Verse: {r.id}")
-print(r.slok)
+# 2. Get a specific verse (Chapter 2, Verse 47)
+print(opengita.get_verse(2, 47))
 
-# 2. Get specific verse (Chapter 2, Verse 47)
-v = gita.verse(2, 47)
-print(f"\nVerse {v.id}: {v.slok}")
-print(f"English Translation: {v.translations[0].description}")
+# 3. Get Chapter details
+print(opengita.get_chapter(2))
 
-# 3. Get Chapter summary
-ch = gita.chapter(2)
-print(f"\nChapter {ch.number}: {ch.translation}")
-print(f"Summary: {ch.summary['en']}")
+# 4. Search verses containing a keyword
+print(opengita.search("entitled"))
+
+# 5. Get deterministic today's verse
+print(opengita.today())
+
+# 6. Get a random inspirational quote
+print(opengita.get_random_quote())
 ```
 
 ---
 
-## Usage Examples
+## Command-Line Interface (CLI)
+
+OpenGita includes a CLI tool when installed. Run commands directly from your terminal:
+
+```bash
+# Get a formatted random verse
+opengita random
+
+# Get today's verse
+opengita today
+
+# Get a specific verse
+opengita verse 2 47
+
+# Get chapter details
+opengita chapter 2
+
+# Search verses containing a keyword
+opengita search karma
+```
+
+---
+
+## Advanced API (Object-Oriented)
+
+For programmatic access, integration, or custom formatting, you can use the object-oriented API which returns Pydantic data models.
+
+### Initializing the Client
+```python
+from opengita import Gita
+
+gita = Gita()
+verse = gita.random() # Returns a Verse model object
+```
+
+### Verse Helper Methods
+The `Verse` model exposes high-level helper methods for accessing translations, commentaries, and formatting options:
+
+```python
+# Get basic properties
+print(verse.reference())               # Returns "Bhagavad Gita 10.32"
+print(verse.sanskrit())                # Returns the raw Sanskrit text
+print(verse.transliteration_text())    # Returns the English transliteration
+
+# Get specific translations or commentaries with automatic preferred-author fallback
+print(verse.translation("en"))         # Returns English translation
+print(verse.translation("hi"))         # Returns Hindi translation
+print(verse.commentary("en"))          # Returns English commentary
+
+# List available metadata
+print(verse.available_languages())     # e.g., ["en", "hi"]
+print(verse.available_translators())   # List of translator names
+
+# Export representations
+print(verse.to_dict())                 # Returns a serializable Python dict
+print(verse.to_json())                 # Returns a pretty-printed JSON string
+print(verse.to_markdown())            # Returns a markdown formatted block
+print(verse.to_html())                 # Returns an HTML structure
+```
 
 ### Retrieving a Specific Commentary
-Get Swami Sivananda's commentary for Chapter 1, Verse 1:
 ```python
 from opengita import Gita
 

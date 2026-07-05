@@ -1,3 +1,5 @@
+from typing import List
+import re
 from .loader import DataLoader
 from .randomizer import GitaRandomizer
 from .models.verse import Verse
@@ -87,3 +89,42 @@ class Gita:
             translators=meta.translators,
             commentators=meta.commentators,
         )
+
+    def search(self, keyword: str) -> List[Verse]:
+        """Search verses containing the keyword in Sanskrit, transliteration, translations, or commentaries.
+        
+        Args:
+            keyword (str): The keyword to search for.
+            
+        Returns:
+            List[Verse]: List of matching Verse objects.
+        """
+        keyword_clean = keyword.lower().strip()
+        if not keyword_clean:
+            return []
+            
+        words_index = self.data_loader.cache.search_index.get("words", {})
+        matching_ids = set()
+        
+        if keyword_clean in words_index:
+            matching_ids.update(words_index[keyword_clean])
+        else:
+            # Fallback to substring search on tokens
+            for token, ids in words_index.items():
+                if keyword_clean in token:
+                    matching_ids.update(ids)
+                    
+        def parse_id(vid):
+            match = re.findall(r'\d+', vid)
+            return [int(x) for x in match] if match else [0, 0]
+            
+        sorted_ids = sorted(list(matching_ids), key=parse_id)
+        
+        results = []
+        for vid in sorted_ids:
+            parts = parse_id(vid)
+            if len(parts) == 2:
+                v = self.verse(parts[0], parts[1])
+                if v:
+                    results.append(v)
+        return results

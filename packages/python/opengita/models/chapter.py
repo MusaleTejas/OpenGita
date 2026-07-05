@@ -10,3 +10,14 @@ class Chapter(BaseModel):
     transliteration: str = Field(..., description="English transliteration of the chapter name.")
     meaning: Dict[str, str] = Field(..., description="Meaning of the chapter name (e.g. 'en', 'hi').")
     summary: Dict[str, str] = Field(..., description="Detailed chapter summary in multiple languages.")
+
+    def __str__(self) -> str:
+        from opengita.formatters.console import ConsoleFormatter
+        return ConsoleFormatter.render_chapter(self)
+
+    def __rich__(self):
+        from opengita.formatters.console import ConsoleFormatter
+        return ConsoleFormatter.render_rich_chapter(self)
+
+    def __repr__(self) -> str:
+        return f'Chapter(number={self.number}, name="{self.name}", translation="{self.translation}")'
