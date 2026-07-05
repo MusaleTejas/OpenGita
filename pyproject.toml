@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opengita"
+version = "0.1.0"
+description = "A modern Python SDK for Bhagavad Gita."
+authors = [
+    {name = "Tejas Musale"}
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "pydantic>=2.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["packages/python"]
+
+[tool.setuptools.package-data]
+opengita = ["data/*.json"]
