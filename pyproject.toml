@@ -6,14 +6,33 @@ build-backend = "setuptools.build_meta"
 name = "opengita"
 version = "0.1.0"
 description = "A modern Python SDK for Bhagavad Gita."
+readme = "README.md"
+license = {file = "LICENSE"}
 authors = [
-    {name = "Tejas Musale"}
+    {name = "Tejas Musale", email = "tejasmusale830@gmail.com"}
 ]
 requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["gita", "bhagavad-gita", "bhagavadgita", "sdk", "python-sdk", "sanskrit", "hinduism", "philosophy"]
 
 dependencies = [
     "pydantic>=2.0"
 ]
+
+[project.urls]
+Homepage = "https://github.com/MusaleTejas/OpenGita"
+Repository = "https://github.com/MusaleTejas/OpenGita"
+"Bug Tracker" = "https://github.com/MusaleTejas/OpenGita/issues"
 
 [tool.setuptools.packages.find]
 where = ["packages/python"]
