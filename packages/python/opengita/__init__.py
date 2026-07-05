@@ -10,6 +10,20 @@ from .exceptions import (
     LanguageNotSupported,
 )
 
+_DISPLAY_MODE = "minimal"
+
+def set_display_mode(mode: str):
+    """Set the default display mode for console outputs ('minimal', 'plain', or 'rich')."""
+    global _DISPLAY_MODE
+    if mode.lower() in ("plain", "minimal", "rich"):
+        _DISPLAY_MODE = mode.lower()
+    else:
+        raise ValueError("Mode must be 'plain', 'minimal', or 'rich'")
+
+def get_display_mode() -> str:
+    """Get the current default display mode."""
+    return _DISPLAY_MODE
+
 # Functional API layer
 def get_random_verse() -> str:
     """Fetch a random canonical verse, formatted for terminal display."""
@@ -45,27 +59,8 @@ def search(keyword: str) -> str:
     """Search for verses matching the keyword, returning a formatted preview of results."""
     gita = Gita()
     results = gita.search(keyword)
-    if not results:
-        return f"No verses found matching '{keyword}'."
-    lines = []
-    lines.append(f"Search Results for '{keyword}' ({len(results)} matches):")
-    lines.append("====================================")
-    
-    # Preview at most 10 matches
-    preview_limit = 10
-    for v in results[:preview_limit]:
-        lines.append(f"• {v.reference()}")
-        lines.append(f"  {v.slok[:60]}...")
-        lines.append(f"  {v.translation()[:100]}...")
-        lines.append("")
-        
-    if len(results) > preview_limit:
-        lines.append(f"... and {len(results) - preview_limit} more matches. Refine your search or use Gita().search() for all results.")
-        lines.append("")
-        
-    if lines and lines[-1] == "":
-        lines.pop()
-    return "\n".join(lines)
+    from opengita.formatters.console import ConsoleFormatter
+    return ConsoleFormatter.render_search(results, keyword)
 
 def get_random_quote() -> str:
     """Fetch a motivational or famous quote (verse) from the Bhagavad Gita."""
@@ -97,4 +92,6 @@ __all__ = [
     "ChapterNotFound",
     "DatasetNotLoaded",
     "LanguageNotSupported",
+    "set_display_mode",
+    "get_display_mode",
 ]

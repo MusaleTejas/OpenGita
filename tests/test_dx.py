@@ -57,3 +57,37 @@ def test_chapter_str_repr():
     
     r = repr(ch)
     assert r == f'Chapter(number=2, name="{ch.name}", translation="{ch.translation}")'
+
+def test_output_modes():
+    import opengita
+    gita = Gita()
+    v = gita.verse(2, 47)
+    
+    # Save original display mode
+    orig_mode = opengita.get_display_mode()
+    
+    try:
+        # Test plain mode
+        opengita.set_display_mode("plain")
+        s_plain = str(v)
+        assert "Bhagavad Gita 2.47" in s_plain
+        assert "---" in s_plain
+        assert "Sanskrit:" in s_plain
+        assert "🕉" not in s_plain
+        
+        # Test minimal mode
+        opengita.set_display_mode("minimal")
+        s_min = str(v)
+        assert "Bhagavad Gita 2.47" in s_min
+        assert "──" in s_min
+        assert "🕉 Sanskrit:" in s_min
+        
+        # Test rich mode
+        opengita.set_display_mode("rich")
+        s_rich = str(v)
+        # rich mode captures using console, it will contain either minimal or ANSI formatted text
+        assert "Bhagavad Gita 2.47" in s_rich
+        
+    finally:
+        # Restore original display mode
+        opengita.set_display_mode(orig_mode)
